@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coach Posture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & BASE ─────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#16A97A;--green-dim:#0D7A58;--green-glow:rgba(22,169,122,0.12);
+  --red:#E04646;--amber:#D98B2A;
+  --bg:#0B0F0E;--bg2:#111715;--bg3:#182019;--bg4:#1E2922;
+  --border:#1E2A26;--border2:#253328;
+  --text:#E8F0EC;--text-dim:#7A9C8A;--text-muted:#3D5448;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --radius:14px;--radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:var(--font-body)}
+
+/* ── NAV ─────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,15,14,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{width:100%;padding:0 52px;height:66px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--font-head);font-size:20px;font-weight:700;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:17px;height:17px}
+.logo-accent{color:var(--green)}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:7px 16px;border-radius:var(--radius-sm);font-size:14px;color:var(--text-dim);cursor:pointer;transition:all .2s;border:none;background:transparent}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--bg3)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-signin{padding:8px 18px;background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;transition:all .2s}
+.nav-signin:hover{color:var(--text);border-color:var(--text-muted)}
+.nav-signup{padding:8px 20px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;transition:background .2s}
+.nav-signup:hover{background:var(--green-dim)}
+.nav-user{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-dim)}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff}
+.nav-logout{padding:6px 14px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px}
+.nav-logout:hover{color:var(--red);border-color:var(--red)}
+
+/* ── PAGES ───────────────────────────────────────── */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{padding:13px 28px;border-radius:var(--radius-sm);font-size:15px;font-weight:500;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--green-dim);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--text-muted);background:var(--bg3)}
+.btn-full{width:100%;justify-content:center}
+
+/* ── FORM ────────────────────────────────────────── */
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px;font-weight:500}
+.form-input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--green)}
+.form-input::placeholder{color:var(--text-muted)}
+.form-error{font-size:12px;color:var(--red);margin-top:4px;display:none}
+.form-error.show{display:block}
+
+/* ── BADGE ───────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(22,169,122,0.1);border:1px solid rgba(22,169,122,0.25);color:var(--green);font-size:12px;padding:5px 14px;border-radius:20px}
+.badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+/* ── SECTION ─────────────────────────────────────── */
+.section{padding:110px 52px 90px;width:100%}
+.section-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+.section-title{font-family:var(--font-head);font-size:40px;font-weight:700;letter-spacing:-1px;color:var(--text);margin-bottom:12px;line-height:1.1}
+.section-sub{color:var(--text-dim);font-size:16px;max-width:560px;margin-bottom:48px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 1 — HOMEPAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.hero{padding:160px 52px 100px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;min-height:100vh}
+.hero-title{font-family:var(--font-head);font-size:70px;font-weight:800;letter-spacing:-3px;line-height:.93;color:var(--text);margin-bottom:22px}
+.hero-title .accent{color:var(--green)}
+.hero-desc{color:var(--text-dim);font-size:17px;line-height:1.85;margin-bottom:36px;max-width:480px}
+.hero-btns{display:flex;gap:12px;margin-bottom:60px}
+.hero-stats{display:flex;gap:36px}
+.hstat-val{font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--text)}
+.hstat-label{font-size:12px;color:var(--text-muted);margin-top:2px}
+.hstat-div{width:1px;background:var(--border)}
+
+/* Live card */
+.live-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.lc-top{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-dim)}
+.lc-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+.lc-live{margin-left:auto;font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px}
+.lc-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.lc-body{padding:24px;display:flex;gap:24px;align-items:center}
+.lc-stats{flex:1;display:flex;flex-direction:column;gap:14px}
+.lc-stat{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.lc-stat-label{color:var(--text-dim)}
+.lc-stat-val{font-weight:500;font-size:15px}
+.lc-stat-val.good{color:var(--green)}
+.lc-stat-val.bad{color:var(--red)}
+.lc-bar-wrap{margin-top:4px}
+.lc-bar-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:5px}
+.lc-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.lc-bar-fill{height:100%;background:var(--green);border-radius:2px;transition:width 1s}
+
+/* 4 Feature buttons */
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:80px}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px 24px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;background:var(--green-glow);opacity:0;transition:opacity .25s}
+.feat-card:hover{border-color:var(--green);transform:translateY(-4px)}
+.feat-card:hover::before{opacity:1}
+.feat-icon{width:48px;height:48px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;transition:background .25s}
+.feat-card:hover .feat-icon{background:rgba(22,169,122,0.15);border-color:rgba(22,169,122,0.3)}
+.feat-title{font-family:var(--font-head);font-size:17px;font-weight:600;margin-bottom:8px;letter-spacing:-0.3px}
+.feat-desc{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:16px}
+.feat-arrow{font-size:18px;color:var(--text-muted);transition:color .2s,transform .2s}
+.feat-card:hover .feat-arrow{color:var(--green);transform:translateX(4px)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 2 — SIGN IN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px}
+.auth-box{width:100%;max-width:440px}
+.auth-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:40px}
+.auth-logo .logo-mark{width:32px;height:32px}
+.auth-title{font-family:var(--font-head);font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px}
+.auth-sub{font-size:14px;color:var(--text-dim);margin-bottom:32px}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text-muted);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-switch{text-align:center;font-size:14px;color:var(--text-dim);margin-top:20px}
+.auth-switch a{color:var(--green);cursor:pointer}
+.auth-switch a:hover{text-decoration:underline}
+.social-btn{width:100%;padding:11px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;transition:border-color .2s}
+.social-btn:hover{border-color:var(--text-muted)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 3 — SIGN UP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.signup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 4 — NEED OF COACH POSTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.slides-layout{display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:start}
+.slide-nav-list{display:flex;flex-direction:column;gap:6px;position:sticky;top:90px}
+.sn-item{padding:16px 18px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.sn-item.active{background:var(--bg2);border-color:var(--border)}
+.sn-item:hover:not(.active){background:rgba(255,255,255,0.02)}
+.sn-num{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;margin-bottom:4px}
+.sn-title{font-size:14px;font-weight:500;color:var(--text-dim);transition:color .2s}
+.sn-item.active .sn-title{color:var(--text)}
+.sn-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+.sn-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--green);width:0%;transition:width .4s}
+.sn-item.active .sn-bar{width:100%}
+.slide-panels{min-height:460px}
+.slide-panel{display:none;animation:fadeIn .3s ease}
+.slide-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sp-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px}
+.sp-card h3{font-family:var(--font-head);font-size:26px;font-weight:700;margin-bottom:16px;letter-spacing:-0.5px;line-height:1.2}
+.sp-card p{color:var(--text-dim);font-size:15px;line-height:1.9;margin-bottom:24px}
+.sp-pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.sp-pill{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500}
+.sp-pill.danger{background:rgba(224,70,70,0.1);color:#F08080;border:1px solid rgba(224,70,70,0.2)}
+.sp-pill.success{background:rgba(22,169,122,0.1);color:var(--green);border:1px solid rgba(22,169,122,0.2)}
+.sp-pill.neutral{background:rgba(122,156,138,0.08);color:var(--text-dim);border:1px solid var(--border)}
+.posture-compare{display:flex;gap:60px;justify-content:center;padding:20px 0}
+.pc-col{text-align:center}
+.pc-label{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+.pc-label.good{color:var(--green)}
+.pc-label.bad{color:var(--red)}
+.impact-bars{display:flex;flex-direction:column;gap:14px}
+.ib-row{display:flex;align-items:center;gap:14px;font-size:14px}
+.ib-label{width:150px;color:var(--text-dim);flex-shrink:0}
+.ib-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.ib-fill{height:100%;border-radius:4px}
+.ib-pct{width:36px;text-align:right;font-size:12px;color:var(--text-dim)}
+.how-steps{display:flex;flex-direction:column;gap:12px}
+.hw-step{display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--bg3);border-radius:var(--radius-sm);font-size:14px;color:var(--text-dim)}
+.hw-num{width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 5 — POMODORO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.session-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.pom-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;text-align:center}
+.pom-modes{display:flex;gap:6px;justify-content:center;margin-bottom:36px}
+.pom-mode{padding:8px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;transition:all .2s}
+.pom-mode.active{background:var(--bg3);color:var(--text);border-color:var(--green)}
+.pom-ring-wrap{position:relative;width:230px;height:230px;margin:0 auto 32px}
+.pom-ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:10}
+.ring-fill{fill:none;stroke:var(--green);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s,stroke .3s}
+.pom-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pom-time{font-family:var(--font-head);font-size:46px;font-weight:700;color:var(--text);letter-spacing:-2px}
+.pom-lbl{font-size:13px;color:var(--text-muted);margin-top:4px}
+.pom-controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+.pom-ctrl{width:48px;height:48px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.pom-ctrl:hover{border-color:var(--text-dim);background:var(--bg3)}
+.pom-play{width:62px;height:62px;border-radius:50%;border:none;background:var(--green);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.pom-play:hover{background:var(--green-dim);transform:scale(1.06)}
+.pom-count{font-size:13px;color:var(--text-muted)}
+.pom-count span{color:var(--text);font-weight:500}
+.posture-strip{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;gap:12px;transition:all .3s}
+.posture-strip.bad{border-color:rgba(224,70,70,0.4);background:rgba(224,70,70,0.05)}
+.ps-dot{width:11px;height:11px;border-radius:50%;background:var(--green);flex-shrink:0;transition:background .3s}
+.ps-dot.bad{background:var(--red)}
+.ps-info{flex:1}
+.ps-status{font-size:15px;font-weight:500;transition:color .3s}
+.ps-status.bad{color:var(--red)}
+.ps-angle{font-size:12px;color:var(--text-muted);margin-top:2px}
+.ps-streak{font-size:12px;color:var(--text-muted);flex-shrink:0}
+.session-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.ss-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.ss-val{font-family:var(--font-head);font-size:24px;font-weight:700}
+.ss-val.good{color:var(--green)}
+.ss-val.bad{color:var(--red)}
+.ss-lbl{font-size:12px;color:var(--text-muted);margin-top:4px}
+.tip-box{background:rgba(22,169,122,0.05);border:1px solid rgba(22,169,122,0.15);border-radius:var(--radius-sm);padding:16px 18px;display:flex;gap:12px;font-size:14px;color:var(--text-dim);line-height:1.7}
+.tip-icon{font-size:20px;flex-shrink:0}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 6 — ANALYTICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.mc-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.mc-val{font-family:var(--font-head);font-size:36px;font-weight:700;margin-bottom:6px}
+.mc-val.good{color:var(--green)}
+.mc-val.bad{color:var(--red)}
+.mc-trend{font-size:13px}
+.mc-trend.up{color:var(--green)}
+.mc-trend.down{color:var(--red)}
+.mc-trend.neutral{color:var(--text-muted)}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:24px}
+.cc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.cc-header h3{font-family:var(--font-head);font-size:17px;font-weight:600;letter-spacing:-.3px}
+.chart-legend{display:flex;gap:20px}
+.cl-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-dim)}
+.cl-dot{width:10px;height:10px;border-radius:3px}
+.bar-chart-area{display:flex;align-items:flex-end;gap:12px;height:150px;padding-bottom:4px}
+.bc-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bc-bars{display:flex;flex-direction:column;justify-content:flex-end;gap:3px;width:100%;flex:1}
+.bc-good{background:var(--green);border-radius:4px 4px 0 0;min-height:4px}
+.bc-bad{background:var(--red);border-radius:4px 4px 0 0;opacity:.75;min-height:4px}
+.bc-day{font-size:11px;color:var(--text-muted);margin-top:6px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 7 — RECORDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.records-table{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.rt-header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.rt-header h3{font-family:var(--font-head);font-size:17px;font-weight:600}
+.rt-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;padding:15px 28px;border-bottom:1px solid var(--border);font-size:14px;align-items:center;transition:background .15s}
+.rt-row:last-child{border-bottom:none}
+.rt-row:hover{background:var(--bg3)}
+.rt-row.head{color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.rt-row.head:hover{background:transparent}
+.score-badge{display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:500}
+.score-great{background:rgba(22,169,122,0.15);color:var(--green)}
+.score-good{background:rgba(22,169,122,0.1);color:#5DB896}
+.score-ok{background:rgba(217,139,42,0.15);color:var(--amber)}
+.score-poor{background:rgba(224,70,70,0.15);color:var(--red)}
+.records-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.rs-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.rs-val{font-family:var(--font-head);font-size:32px;font-weight:700;margin-bottom:4px}
+.rs-label{font-size:13px;color:var(--text-muted)}
+.rs-sub{font-size:12px;color:var(--text-muted);margin-top:6px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:36px 52px;display:flex;align-items:center;justify-content:space-between}
+footer p{font-size:13px;color:var(--text-muted)}
+
+/* TOAST NOTIFICATION */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;font-size:14px;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:999;transform:translateY(100px);opacity:0;transition:all .35s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:rgba(22,169,122,0.4)}
+.toast.error{border-color:rgba(224,70,70,0.4)}
+
+@media(max-width:900px){
+  .nav-inner{padding:0 24px}
+  .hero{grid-template-columns:1fr;padding:100px 24px 60px}
+  .live-card{display:none}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .slides-layout,.session-layout{grid-template-columns:1fr}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .section{padding:80px 24px 60px}
+  footer{padding:24px;flex-direction:column;gap:8px;text-align:center}
+  .hero-title{font-size:46px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="goPage('home')">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="5" x2="7" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="4" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="10" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="5.5" y2="13" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="8.5" y2="13" stroke="#fff" stroke-width="1.3"/></svg>
+      </div>
+      Coach<span class="logo-accent">Posture</span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link" onclick="goPage('why')">Why</button>
+      <button class="nav-link" onclick="goPage('pomodoro')">Session</button>
+      <button class="nav-link" onclick="goPage('analytics')">Analytics</button>
+      <button class="nav-link" onclick="goPage('records')">Records</button>
+    </div>
+    <div class="nav-right" id="navRight">
+      <button class="nav-signin" onclick="goPage('signin')">Sign in</button>
+      <button class="nav-signup" onclick="goPage('signup')">Get started</button>
+    </div>
+    <div class="nav-right" id="navUser" style="display:none">
+      <div class="nav-avatar" id="navAvatar">P</div>
+      <span class="nav-user" id="navUserName">Prisha</span>
+      <button class="nav-logout" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div>
+      <div class="badge" style="margin-bottom:24px"><span class="badge-pulse"></span>AI-powered posture detection</div>
+      <h1 class="hero-title">Sit better.<br/><span class="accent">Code longer.</span></h1>
+      <p class="hero-desc">Real-time posture monitoring built for developers. Your webcam + AI catches bad posture and alerts you before the pain ever starts.</p>
+      <div class="hero-btns">
+        <button class="btn btn-green" onclick="goPage('pomodoro')">▶ Start a session</button>
+        <button class="btn btn-ghost" onclick="goPage('why')">Learn more ↓</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hstat-val">80%</div><div class="hstat-label">devs get back pain</div></div>
+        <div class="hstat-div"></div>
+        <div><div class="hstat-val">8hrs</div><div class="hstat-label">avg seated daily</div></div>
+        <div class="hstat-div"></div>
+        <div><div class="hstat-val">33pts</div><div class="hstat-label">body points tracked</div></div>
+      </div>
+    </div>
+    <div class="live-card">
+      <div class="lc-top">
+        <div class="lc-dot"></div>
+        <span>Live posture feed</span>
+        <span class="lc-live">LIVE</span>
+      </div>
+      <div class="lc-body">
+        <svg viewBox="0 0 80 168" width="80" height="168" style="opacity:.9;flex-shrink:0">
+          <circle cx="40" cy="14" r="11" fill="none" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="40" y1="25" x2="40" y2="80" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="40" y1="48" x2="18" y2="66" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="40" y1="48" x2="62" y2="66" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="18" y1="66" x2="13" y2="92" stroke="#16A97A" stroke-width="1.3"/>
+          <line x1="62" y1="66" x2="67" y2="92" stroke="#16A97A" stroke-width="1.3"/>
+          <line x1="40" y1="80" x2="29" y2="126" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="40" y1="80" x2="51" y2="126" stroke="#16A97A" stroke-width="1.8"/>
+          <line x1="29" y1="126" x2="27" y2="160" stroke="#16A97A" stroke-width="1.3"/>
+          <line x1="51" y1="126" x2="53" y2="160" stroke="#16A97A" stroke-width="1.3"/>
+          <circle cx="40" cy="14" r="4" fill="#16A97A"/>
+          <circle cx="18" cy="48" r="5" fill="#16A97A" opacity=".5"/>
+          <circle cx="62" cy="48" r="5" fill="#16A97A" opacity=".5"/>
+          <circle cx="40" cy="80" r="5" fill="#16A97A"/>
+        </svg>
+        <div class="lc-stats">
+          <div class="lc-stat"><span class="lc-stat-label">Neck angle</span><span class="lc-stat-val good" id="heroAngle">165°</span></div>
+          <div class="lc-stat"><span class="lc-stat-label">Status</span><span class="lc-stat-val good" id="heroStatus">Good posture</span></div>
+          <div class="lc-stat"><span class="lc-stat-label">Session time</span><span class="lc-stat-val" id="heroSession">0:00</span></div>
+          <div class="lc-bar-wrap">
+            <div class="lc-bar-row"><span>Good posture</span><span id="heroGoodPct">0%</span></div>
+            <div class="lc-bar"><div class="lc-bar-fill" id="heroBar" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Feature Cards -->
+  <div style="padding:0 52px 100px">
+    <div style="margin-bottom:32px">
+      <div class="section-eyebrow">Explore</div>
+      <h2 style="font-family:var(--font-head);font-size:32px;font-weight:700;letter-spacing:-1px">Everything Coach Posture does</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card" onclick="goPage('why')">
+        <div class="feat-icon">🦴</div>
+        <div class="feat-title">Need of Coach Posture</div>
+        <div class="feat-desc">Why bad posture is silently destroying your body and how this app fixes it.</div>
+        <div class="feat-arrow">→</div>
+      </div>
+      <div class="feat-card" onclick="goPage('pomodoro')">
+        <div class="feat-icon">⏱</div>
+        <div class="feat-title">Pomodoro Timer</div>
+        <div class="feat-desc">Focus sessions with live posture monitoring. Work in intervals, alert on slouch.</div>
+        <div class="feat-arrow">→</div>
+      </div>
+      <div class="feat-card" onclick="goPage('analytics')">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Analytics</div>
+        <div class="feat-desc">Weekly posture trends, good vs bad ratios, and improvement graphs.</div>
+        <div class="feat-arrow">→</div>
+      </div>
+      <div class="feat-card" onclick="goPage('records')">
+        <div class="feat-icon">📋</div>
+        <div class="feat-title">Records</div>
+        <div class="feat-desc">Full session history with scores, durations, and personal bests.</div>
+        <div class="feat-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="logo"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="5" x2="7" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="4" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="10" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="5.5" y2="13" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="8.5" y2="13" stroke="#fff" stroke-width="1.3"/></svg></div>Coach<span class="logo-accent">Posture</span></div>
+    <p>Built with Python · MediaPipe · C · OpenCV · Flask</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SIGN IN
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-signin">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo" onclick="goPage('home')" style="cursor:pointer">
+        <div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="5" x2="7" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="4" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="10" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="5.5" y2="13" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="8.5" y2="13" stroke="#fff" stroke-width="1.3"/></svg></div>
+        Coach<span class="logo-accent">Posture</span>
+      </div>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-sub">Sign in to continue your posture journey.</p>
+      <div class="auth-card">
+        <button class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-divider">or</div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="signinEmail" placeholder="you@example.com"/>
+          <div class="form-error" id="signinEmailErr">Please enter a valid email</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="signinPass" placeholder="Your password"/>
+          <div class="form-error" id="signinPassErr">Password is required</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+          <a style="font-size:13px;color:var(--green);cursor:pointer">Forgot password?</a>
+        </div>
+        <button class="btn btn-green btn-full" onclick="handleSignin()">Sign in →</button>
+      </div>
+      <div class="auth-switch">Don't have an account? <a onclick="goPage('signup')">Create one free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SIGN UP
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo" onclick="goPage('home')" style="cursor:pointer">
+        <div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="5" x2="7" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="4" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="7" x2="10" y2="9" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="5.5" y2="13" stroke="#fff" stroke-width="1.3"/><line x1="7" y1="9" x2="8.5" y2="13" stroke="#fff" stroke-width="1.3"/></svg></div>
+        Coach<span class="logo-accent">Posture</span>
+      </div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Start fixing your posture today. Free forever.</p>
+      <div class="auth-card">
+        <button class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign up with Google
+        </button>
+        <div class="auth-divider">or</div>
+        <div class="signup-grid">
+          <div class="form-group">
+            <label class="form-label">First name</label>
+            <input class="form-input" type="text" id="signupFirst" placeholder="Prisha"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last name</label>
+            <input class="form-input" type="text" id="signupLast" placeholder="Sharma"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="signupEmail" placeholder="you@example.com"/>
+          <div class="form-error" id="signupEmailErr">Please enter a valid email</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="signupPass" placeholder="At least 8 characters"/>
+          <div class="form-error" id="signupPassErr">Password must be at least 8 characters</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm password</label>
+          <input class="form-input" type="password" id="signupPass2" placeholder="Repeat your password"/>
+          <div class="form-error" id="signupPass2Err">Passwords do not match</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6">By creating an account you agree to our <a style="color:var(--green);cursor:pointer">Terms of Service</a> and <a style="color:var(--green);cursor:pointer">Privacy Policy</a>.</div>
+        <button class="btn btn-green btn-full" onclick="handleSignup()">Create account →</button>
+      </div>
+      <div class="auth-switch">Already have an account? <a onclick="goPage('signin')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: WHY / NEED OF COACH POSTURE
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-why">
+  <div class="section">
+    <div class="section-eyebrow">Why it matters</div>
+    <h2 class="section-title">The need for Coach Posture</h2>
+    <p class="section-sub">Most developers don't realise their daily habits are quietly damaging their bodies. Here's the full picture.</p>
+    <div class="slides-layout">
+      <div class="slide-nav-list">
+        <div class="sn-item active" onclick="goSlide(0)"><div class="sn-num">01</div><div class="sn-title">The problem</div><div class="sn-sub">Why coders suffer most</div><div class="sn-bar" id="sb0"></div></div>
+        <div class="sn-item" onclick="goSlide(1)"><div class="sn-num">02</div><div class="sn-title">The impact</div><div class="sn-sub">What bad posture does</div><div class="sn-bar" id="sb1"></div></div>
+        <div class="sn-item" onclick="goSlide(2)"><div class="sn-num">03</div><div class="sn-title">The solution</div><div class="sn-sub">How Coach Posture fixes it</div><div class="sn-bar" id="sb2"></div></div>
+      </div>
+      <div class="slide-panels">
+        <div class="slide-panel active" id="slide-0">
+          <div class="sp-card">
+            <h3>Most developers don't realise their posture is destroying their spine</h3>
+            <p>Developers sit for 8–10 hours a day staring at screens. Over time the head drifts forward, shoulders round, and the spine compresses. The pain doesn't start immediately — it creeps in after months or years, by which point the damage is already done.</p>
+            <div class="sp-pills"><span class="sp-pill danger">80% of devs get chronic back pain</span><span class="sp-pill danger">Avg onset: 3–5 years into career</span><span class="sp-pill neutral">Most cases are fully preventable</span></div>
+            <div class="posture-compare">
+              <div class="pc-col"><svg viewBox="0 0 60 130" width="65" height="140"><circle cx="30" cy="11" r="8" fill="none" stroke="#16A97A" stroke-width="1.5"/><line x1="30" y1="19" x2="30" y2="65" stroke="#16A97A" stroke-width="1.5"/><line x1="30" y1="36" x2="13" y2="52" stroke="#16A97A" stroke-width="1.5"/><line x1="30" y1="36" x2="47" y2="52" stroke="#16A97A" stroke-width="1.5"/><line x1="13" y1="52" x2="10" y2="74" stroke="#16A97A" stroke-width="1.2"/><line x1="47" y1="52" x2="50" y2="74" stroke="#16A97A" stroke-width="1.2"/><line x1="30" y1="65" x2="23" y2="100" stroke="#16A97A" stroke-width="1.5"/><line x1="30" y1="65" x2="37" y2="100" stroke="#16A97A" stroke-width="1.5"/><line x1="23" y1="100" x2="22" y2="122" stroke="#16A97A" stroke-width="1.2"/><line x1="37" y1="100" x2="38" y2="122" stroke="#16A97A" stroke-width="1.2"/></svg><div class="pc-label good">Good</div></div>
+              <div class="pc-col"><svg viewBox="0 0 60 130" width="65" height="140"><circle cx="20" cy="13" r="8" fill="none" stroke="#E04646" stroke-width="1.5"/><line x1="20" y1="21" x2="26" y2="65" stroke="#E04646" stroke-width="1.5"/><line x1="24" y1="42" x2="10" y2="55" stroke="#E04646" stroke-width="1.5"/><line x1="24" y1="42" x2="44" y2="50" stroke="#E04646" stroke-width="1.5"/><line x1="10" y1="55" x2="7" y2="76" stroke="#E04646" stroke-width="1.2"/><line x1="44" y1="50" x2="50" y2="70" stroke="#E04646" stroke-width="1.2"/><line x1="26" y1="65" x2="21" y2="100" stroke="#E04646" stroke-width="1.5"/><line x1="26" y1="65" x2="36" y2="100" stroke="#E04646" stroke-width="1.5"/><line x1="21" y1="100" x2="20" y2="122" stroke="#E04646" stroke-width="1.2"/><line x1="36" y1="100" x2="37" y2="122" stroke="#E04646" stroke-width="1.2"/></svg><div class="pc-label bad">Bad</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-panel" id="slide-1">
+          <div class="sp-card">
+            <h3>Every inch forward adds 5kg of pressure — your spine is screaming</h3>
+            <p>Forward head posture is the most common coder injury. When your head moves 2–3 inches forward, your spine takes up to 27kg of extra force. Over years this causes disc compression, nerve damage, and chronic headaches that destroy your productivity.</p>
+            <div class="sp-pills"><span class="sp-pill danger">+27kg spine pressure per inch</span><span class="sp-pill danger">30% reduced lung capacity</span><span class="sp-pill danger">45% focus reduction</span></div>
+            <div class="impact-bars">
+              <div class="ib-row"><span class="ib-label">Spine pressure</span><div class="ib-track"><div class="ib-fill" style="width:90%;background:#E04646"></div></div><span class="ib-pct">90%</span></div>
+              <div class="ib-row"><span class="ib-label">Neck strain</span><div class="ib-track"><div class="ib-fill" style="width:75%;background:#D98B2A"></div></div><span class="ib-pct">75%</span></div>
+              <div class="ib-row"><span class="ib-label">Lung capacity lost</span><div class="ib-track"><div class="ib-fill" style="width:30%;background:#D98B2A"></div></div><span class="ib-pct">30%</span></div>
+              <div class="ib-row"><span class="ib-label">Focus reduction</span><div class="ib-track"><div class="ib-fill" style="width:45%;background:#E04646"></div></div><span class="ib-pct">45%</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-panel" id="slide-2">
+          <div class="sp-card">
+            <h3>Coach Posture catches bad posture before your body does</h3>
+            <p>Your webcam + MediaPipe AI tracks your ear, shoulder and hip alignment 30 times per second. The moment your neck tilts past your threshold, you get an instant desktop notification. Weekly analytics show whether your habits are actually improving.</p>
+            <div class="sp-pills"><span class="sp-pill success">Real-time AI detection</span><span class="sp-pill success">Smart cooldown alerts</span><span class="sp-pill success">Weekly habit analytics</span></div>
+            <div class="how-steps">
+              <div class="hw-step"><div class="hw-num">1</div>Webcam captures your pose 30 times per second</div>
+              <div class="hw-step"><div class="hw-num">2</div>AI measures the ear → shoulder → hip angle</div>
+              <div class="hw-step"><div class="hw-num">3</div>Alert fires when angle drops below your threshold</div>
+              <div class="hw-step"><div class="hw-num">4</div>Every session saved to CSV for weekly review</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px">
+      <button class="btn btn-green" onclick="goPage('pomodoro')">▶ Start your first session</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: POMODORO
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-pomodoro">
+  <div class="section">
+    <div class="section-eyebrow">Focused work</div>
+    <h2 class="section-title">Pomodoro session</h2>
+    <p class="section-sub">Work in focused intervals with live posture monitoring. Every session is logged automatically to your records.</p>
+    <div class="session-layout">
+      <div class="pom-card">
+        <div class="pom-modes">
+          <button class="pom-mode active" id="m-focus" onclick="setMode('focus')">Focus 25m</button>
+          <button class="pom-mode" id="m-short" onclick="setMode('short')">Break 5m</button>
+          <button class="pom-mode" id="m-long" onclick="setMode('long')">Long break 15m</button>
+        </div>
+        <div class="pom-ring-wrap">
+          <svg viewBox="0 0 230 230" width="230" height="230">
+            <circle class="ring-bg" cx="115" cy="115" r="100"/>
+            <circle class="ring-fill" id="ringFill" cx="115" cy="115" r="100" transform="rotate(-90 115 115)"/>
+          </svg>
+          <div class="pom-center">
+            <div class="pom-time" id="pomTime">25:00</div>
+            <div class="pom-lbl" id="pomLabel">Focus session</div>
+          </div>
+        </div>
+        <div class="pom-controls">
+          <button class="pom-ctrl" onclick="resetTimer()">↺</button>
+          <button class="pom-play" id="pomPlay" onclick="toggleTimer()">▶</button>
+          <button class="pom-ctrl" onclick="skipSession()">⏭</button>
+        </div>
+        <div class="pom-count">Sessions today: <span id="pomSessions">0</span></div>
+      </div>
+      <div>
+        <div class="posture-strip" id="postureStrip">
+          <div class="ps-dot" id="psDot"></div>
+          <div class="ps-info">
+            <div class="ps-status" id="psStatus">Good posture</div>
+            <div class="ps-angle" id="psAngle">Angle: 165° — keep it up!</div>
+          </div>
+          <div class="ps-streak" id="psStreak">0s streak</div>
+        </div>
+        <div class="session-stats">
+          <div class="ss-box"><div class="ss-val good" id="ssGood">0%</div><div class="ss-lbl">Good posture</div></div>
+          <div class="ss-box"><div class="ss-val bad" id="ssBad">0%</div><div class="ss-lbl">Bad posture</div></div>
+          <div class="ss-box"><div class="ss-val" id="ssAlerts">0</div><div class="ss-lbl">Alerts sent</div></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:14px">
+  <button class="btn btn-green" id="startSessionBtn" onclick="startSession()" style="flex:1;justify-content:center">
+    ▶ Start session
+  </button>
+  <button class="btn btn-ghost" id="endSessionBtn" onclick="endSession()" style="flex:1;justify-content:center;display:none">
+    ⏹ End session
+  </button>
+</div>
+        <div class="tip-box"><div class="tip-icon">💡</div><div>Sit with your ears directly above your shoulders. Imagine a string pulling the top of your head gently toward the ceiling. Let your shoulders relax down and back.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ANALYTICS
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-analytics">
+  <div class="section">
+    <div class="section-eyebrow">Progress tracking</div>
+    <h2 class="section-title">Weekly analytics</h2>
+    <p class="section-sub">See exactly how your posture is improving. Every session adds a data point to your personal progress chart.</p>
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="mc-label">Avg good posture</div><div class="mc-val good" id="anGood">—</div><div class="mc-trend up" id="anGoodTrend"></div></div>
+      <div class="metric-card"><div class="mc-label">Avg bad posture</div><div class="mc-val bad" id="anBad">—</div><div class="mc-trend down" id="anBadTrend"></div></div>
+      <div class="metric-card"><div class="mc-label">Sessions done</div><div class="mc-val" id="anSessions">—</div><div class="mc-trend neutral">This week</div></div>
+      <div class="metric-card"><div class="mc-label">Alerts triggered</div><div class="mc-val" id="anAlerts">—</div><div class="mc-trend up">↓ fewer each day</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="cc-header">
+        <h3>Good vs bad posture — last 7 days</h3>
+        <div class="chart-legend"><span class="cl-item"><span class="cl-dot" style="background:#16A97A"></span>Good</span><span class="cl-item"><span class="cl-dot" style="background:#E04646"></span>Bad</span></div>
+      </div>
+      <div class="bar-chart-area" id="weekChart"></div>
+    </div>
+    <div class="records-table">
+      <div class="rt-header"><h3>Recent sessions</h3></div>
+      <div class="rt-row head"><span>Date</span><span>Duration</span><span>Good %</span><span>Bad %</span><span>Score</span></div>
+      <div id="analyticsTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: RECORDS
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-records">
+  <div class="section">
+    <div class="section-eyebrow">Session history</div>
+    <h2 class="section-title">Your records</h2>
+    <p class="section-sub">Every session you've ever completed. Your personal posture journey from day one.</p>
+    <div class="records-summary">
+      <div class="rs-card"><div class="rs-val" style="color:var(--green)" id="recBestScore">—</div><div class="rs-label">Best session score</div><div class="rs-sub">Personal best</div></div>
+      <div class="rs-card"><div class="rs-val" id="recTotal">—</div><div class="rs-label">Total sessions</div><div class="rs-sub">All time</div></div>
+      <div class="rs-card"><div class="rs-val" id="recAvgGood">—</div><div class="rs-label">Avg good posture</div><div class="rs-sub">All time average</div></div>
+    </div>
+    <div class="records-table">
+      <div class="rt-header">
+        <h3>All sessions</h3>
+        <span style="font-size:13px;color:var(--text-muted)" id="recCount">0 sessions</span>
+      </div>
+      <div class="rt-row head"><span>Date &amp; time</span><span>Duration</span><span>Good %</span><span>Bad %</span><span>Alerts</span><span>Score</span></div>
+      <div id="recordsTable"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+let currentUser = JSON.parse(localStorage.getItem('cp_user') || 'null');
+let currentPage = 'home';
+
+// ── PAGE NAVIGATION ───────────────────────────────────
+function goPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+  const map = {why:'Why',pomodoro:'Session',analytics:'Analytics',records:'Records'};
+  if(map[p]) document.querySelectorAll('.nav-link').forEach(el => { if(el.textContent===map[p]) el.classList.add('active'); });
+  currentPage = p;
+  window.scrollTo(0,0);
+  if(p==='analytics') loadAnalytics();
+  if(p==='records') loadRecords();
+}
+
+// ── AUTH UI ───────────────────────────────────────────
+function updateNavAuth() {
+  const right = document.getElementById('navRight');
+  const user  = document.getElementById('navUser');
+  if(currentUser) {
+    right.style.display = 'none';
+    user.style.display  = 'flex';
+    document.getElementById('navAvatar').textContent   = currentUser.first[0].toUpperCase();
+    document.getElementById('navUserName').textContent = currentUser.first;
+  } else {
+    right.style.display = 'flex';
+    user.style.display  = 'none';
+  }
+}
+
+function handleSignin() {
+  const email = document.getElementById('signinEmail').value.trim();
+  const pass  = document.getElementById('signinPass').value;
+  let ok = true;
+  document.getElementById('signinEmailErr').classList.remove('show');
+  document.getElementById('signinPassErr').classList.remove('show');
+  if(!email.includes('@')){ document.getElementById('signinEmailErr').classList.add('show'); ok=false; }
+  if(!pass){ document.getElementById('signinPassErr').classList.add('show'); ok=false; }
+  if(!ok) return;
+  const users = JSON.parse(localStorage.getItem('cp_users') || '[]');
+  const found = users.find(u => u.email===email && u.pass===pass);
+  if(!found){ showToast('No account found with those details.','error'); return; }
+  currentUser = found;
+  localStorage.setItem('cp_user', JSON.stringify(currentUser));
+  updateNavAuth();
+  showToast(`Welcome back, ${currentUser.first}! 👋`,'success');
+  goPage('home');
+}
+
+function handleSignup() {
+  const first = document.getElementById('signupFirst').value.trim();
+  const last  = document.getElementById('signupLast').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass  = document.getElementById('signupPass').value;
+  const pass2 = document.getElementById('signupPass2').value;
+  let ok = true;
+  ['signupEmailErr','signupPassErr','signupPass2Err'].forEach(id => document.getElementById(id).classList.remove('show'));
+  if(!email.includes('@')){ document.getElementById('signupEmailErr').classList.add('show'); ok=false; }
+  if(pass.length<8){ document.getElementById('signupPassErr').classList.add('show'); ok=false; }
+  if(pass!==pass2){ document.getElementById('signupPass2Err').classList.add('show'); ok=false; }
+  if(!ok) return;
+  const users = JSON.parse(localStorage.getItem('cp_users') || '[]');
+  if(users.find(u=>u.email===email)){ showToast('An account with this email already exists.','error'); return; }
+  const newUser = {first:first||'User',last,email,pass};
+  users.push(newUser);
+  localStorage.setItem('cp_users', JSON.stringify(users));
+  currentUser = newUser;
+  localStorage.setItem('cp_user', JSON.stringify(currentUser));
+  updateNavAuth();
+  showToast(`Account created! Welcome, ${newUser.first} 🎉`,'success');
+  goPage('home');
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('cp_user');
+  updateNavAuth();
+  showToast('You have been signed out.','');
+  goPage('home');
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast '+(type||'');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── SLIDES ────────────────────────────────────────────
+function goSlide(i) {
+  document.querySelectorAll('.slide-panel').forEach((p,j) => p.classList.toggle('active',j===i));
+  document.querySelectorAll('.sn-item').forEach((n,j) => {
+    n.classList.toggle('active',j===i);
+    document.getElementById('sb'+j).style.width = j===i?'100%':'0%';
+  });
+}
+goSlide(0);
+
+// ── POMODORO ──────────────────────────────────────────
+const pomModes = {focus:{secs:1500,label:'Focus session'},short:{secs:300,label:'Short break'},long:{secs:900,label:'Long break'}};
+let pomMode='focus', pomTotal=1500, pomRemain=1500, pomRunning=false, pomInterval=null, pomDone=0;
+const CIRC = 2*Math.PI*100;
+
+function setMode(m) {
+  pomMode=m; pomTotal=pomModes[m].secs; pomRemain=pomTotal;
+  document.querySelectorAll('.pom-mode').forEach(b=>b.classList.remove('active'));
+  document.getElementById('m-'+m).classList.add('active');
+  document.getElementById('pomLabel').textContent=pomModes[m].label;
+  updateRing();
+  if(pomRunning){clearInterval(pomInterval);pomRunning=false;document.getElementById('pomPlay').textContent='▶';}
+}
+function updateRing() {
+  const m=Math.floor(pomRemain/60),s=pomRemain%60;
+  document.getElementById('pomTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('ringFill').style.strokeDasharray=CIRC;
+  document.getElementById('ringFill').style.strokeDashoffset=CIRC*(pomRemain/pomTotal);
+  document.getElementById('ringFill').style.stroke=pomMode==='focus'?'#16A97A':'#D98B2A';
+}
+function toggleTimer() {
+  if(pomRunning){clearInterval(pomInterval);pomRunning=false;document.getElementById('pomPlay').textContent='▶';}
+  else{
+    pomRunning=true;document.getElementById('pomPlay').textContent='⏸';
+    pomInterval=setInterval(()=>{
+      pomRemain--;updateRing();
+      if(pomRemain<=0){
+        clearInterval(pomInterval);pomRunning=false;
+        document.getElementById('pomPlay').textContent='▶';
+        pomDone++;document.getElementById('pomSessions').textContent=pomDone;
+        pomRemain=pomTotal;updateRing();
+        showToast('Session complete! Great work 🎉','success');
+      }
+    },1000);
+  }
+}
+function resetTimer(){clearInterval(pomInterval);pomRunning=false;pomRemain=pomTotal;updateRing();document.getElementById('pomPlay').textContent='▶';}
+function skipSession(){clearInterval(pomInterval);pomRunning=false;pomRemain=0;updateRing();}
+updateRing();
+
+// ── LIVE POSTURE (fetches from Flask or simulates) ────
+let heroSecs=0, alertCount=0, sessionActive=false, goodSecsSession=0, badSecsSession=0;
+setInterval(()=>{heroSecs++;const hm=Math.floor(heroSecs/60),hs=heroSecs%60;const el=document.getElementById('heroSession');if(el)el.textContent=String(hm).padStart(2,'0')+':'+String(hs).padStart(2,'0');},1000);
+
+async function fetchPosture(){
+  try{
+    const res=await fetch('http://localhost:5000/api/posture');
+    const d=await res.json();
+    const good=d.status==='Good Posture';
+
+    // update alert counter from bad posture changes
+    if(sessionActive && !good){
+      alertCount++;
+      document.getElementById('ssAlerts').textContent=alertCount;
+    }
+
+    setPostureUI(good,d.angle,d.good_pct,d.bad_pct,d.streak);
+  }catch(e){
+    // simulate if Flask not running
+    const angle=145+Math.round(Math.random()*30-(Math.random()>.75?25:0));
+    const good=angle>150;
+    if(sessionActive && !good){
+      alertCount++;
+      document.getElementById('ssAlerts').textContent=alertCount;
+    }
+    setPostureUI(good,angle,good?72:28,good?28:72,Math.floor(Math.random()*20));
+  }
+}
+function startSession(){
+  sessionActive  = true;
+  alertCount     = 0;
+  goodSecsSession = 0;
+  badSecsSession  = 0;
+
+  // reset stats display
+  document.getElementById('ssGood').textContent   = '0%';
+  document.getElementById('ssBad').textContent    = '0%';
+  document.getElementById('ssAlerts').textContent = '0';
+  document.getElementById('psStreak').textContent = '0s streak';
+
+  // swap buttons
+  document.getElementById('startSessionBtn').style.display = 'none';
+  document.getElementById('endSessionBtn').style.display   = 'flex';
+
+  // start pomodoro timer automatically
+  if(!pomRunning) toggleTimer();
+
+  showToast('Session started! Sit up straight 💪','success');
+}
+
+function endSession(){
+  sessionActive = false;
+
+  // stop timer
+  if(pomRunning) toggleTimer();
+
+  // swap buttons back
+  document.getElementById('startSessionBtn').style.display = 'flex';
+  document.getElementById('endSessionBtn').style.display   = 'none';
+
+  // show summary
+  const good = document.getElementById('ssGood').textContent;
+  const bad  = document.getElementById('ssBad').textContent;
+  const alts = document.getElementById('ssAlerts').textContent;
+
+  showToast(`Session ended! Good: ${good} | Bad: ${bad} | Alerts: ${alts}`,'success');
+  pomDone++;
+  document.getElementById('pomSessions').textContent = pomDone;
+
+  // reset for next session
+  alertCount = 0;
+}
+function setPostureUI(good,angle,gp,bp,streak){
+  const strip=document.getElementById('postureStrip');
+  const dot=document.getElementById('psDot');
+  const stat=document.getElementById('psStatus');
+  const ang=document.getElementById('psAngle');
+  if(!strip)return;
+  if(good){strip.classList.remove('bad');dot.classList.remove('bad');stat.classList.remove('bad');stat.textContent='Good posture';ang.textContent=`Angle: ${angle}° — keep it up!`;}
+  else{strip.classList.add('bad');dot.classList.add('bad');stat.classList.add('bad');stat.textContent='Bad posture! Sit up!';ang.textContent=`Angle: ${angle}° — lean back`;}
+  document.getElementById('psStreak').textContent=streak+'s streak';
+  document.getElementById('ssGood').textContent=gp+'%';
+  document.getElementById('ssBad').textContent=bp+'%';
+  const ha=document.getElementById('heroAngle');
+  const hs=document.getElementById('heroStatus');
+  const hb=document.getElementById('heroBar');
+  const hgp=document.getElementById('heroGoodPct');
+  if(ha){ha.textContent=angle+'°';ha.className='lc-stat-val '+(good?'good':'bad');}
+  if(hs){hs.textContent=good?'Good posture':'Bad posture!';hs.className='lc-stat-val '+(good?'good':'bad');}
+  if(hb)hb.style.width=gp+'%';
+  if(hgp)hgp.textContent=gp+'%';
+}
+setInterval(fetchPosture,1000);
+fetchPosture();
+
+// ── ANALYTICS ─────────────────────────────────────────
+async function loadAnalytics(){
+  try{
+    const [sRes,wRes]=await Promise.all([fetch('http://localhost:5000/api/sessions'),fetch('http://localhost:5000/api/weekly')]);
+    const sessions=await sRes.json();
+    const weekly=await wRes.json();
+    renderAnalytics(sessions,weekly);
+  }catch(e){renderFallbackAnalytics();}
+}
+function renderAnalytics(sessions,weekly){
+  // metrics
+  if(sessions.length){
+    const avg=arr=>arr.reduce((a,b)=>a+b,0)/arr.length;
+    const gp=avg(sessions.map(s=>parseFloat(s.good_posture_pct)));
+    const bp=avg(sessions.map(s=>parseFloat(s.bad_posture_pct)));
+    document.getElementById('anGood').textContent=Math.round(gp)+'%';
+    document.getElementById('anBad').textContent=Math.round(bp)+'%';
+    document.getElementById('anSessions').textContent=sessions.length;
+    document.getElementById('anAlerts').textContent='—';
+  }
+  // chart
+  const el=document.getElementById('weekChart');el.innerHTML='';
+  weekly.forEach(d=>{
+    const col=document.createElement('div');col.className='bc-col';
+    const gh=Math.round(d.good*1.5),bh=Math.round(d.bad*1.5);
+    const day=new Date(d.date).toLocaleDateString('en',{weekday:'short'});
+    col.innerHTML=`<div class="bc-bars"><div class="bc-bad" style="height:${bh}px"></div><div class="bc-good" style="height:${gh}px"></div></div><div class="bc-day">${day}</div>`;
+    el.appendChild(col);
+  });
+  // table
+  const tbody=document.getElementById('analyticsTable');tbody.innerHTML='';
+  [...sessions].reverse().slice(0,10).forEach(s=>{
+    const gp=parseFloat(s.good_posture_pct);
+    const score=gp>=80?'Great':gp>=65?'Good':gp>=45?'OK':'Poor';
+    const cls='score-'+score.toLowerCase();
+    const row=document.createElement('div');row.className='rt-row';
+    row.innerHTML=`<span>${s.date}</span><span>${s.duration_mmss}</span><span style="color:#16A97A">${s.good_posture_pct}%</span><span style="color:#E04646">${s.bad_posture_pct}%</span><span class="score-badge ${cls}">${score}</span>`;
+    tbody.appendChild(row);
+  });
+}
+function renderFallbackAnalytics(){
+  document.getElementById('anGood').textContent='74%';
+  document.getElementById('anBad').textContent='26%';
+  document.getElementById('anSessions').textContent='12';
+  document.getElementById('anAlerts').textContent='23';
+  document.getElementById('anGoodTrend').textContent='↑ +8% from last week';
+  document.getElementById('anBadTrend').textContent='↓ improving';
+  const el=document.getElementById('weekChart');el.innerHTML='';
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  [{good:42,bad:58},{good:55,bad:45},{good:61,bad:39},{good:68,bad:32},{good:74,bad:26},{good:79,bad:21},{good:82,bad:18}].forEach((d,i)=>{
+    const col=document.createElement('div');col.className='bc-col';
+    col.innerHTML=`<div class="bc-bars"><div class="bc-bad" style="height:${Math.round(d.bad*1.5)}px"></div><div class="bc-good" style="height:${Math.round(d.good*1.5)}px"></div></div><div class="bc-day">${days[i]}</div>`;
+    el.appendChild(col);
+  });
+  const tbody=document.getElementById('analyticsTable');tbody.innerHTML='';
+  [{date:'Today 14:32',dur:'25:00',good:82,bad:18,score:'Great'},{date:'Today 11:05',dur:'25:00',good:74,bad:26,score:'Good'},{date:'Yesterday 16:20',dur:'18:34',good:61,bad:39,score:'OK'},{date:'Yesterday 10:45',dur:'25:00',good:55,bad:45,score:'Poor'}].forEach(s=>{
+    const cls='score-'+s.score.toLowerCase();
+    const row=document.createElement('div');row.className='rt-row';
+    row.innerHTML=`<span>${s.date}</span><span>${s.dur}</span><span style="color:#16A97A">${s.good}%</span><span style="color:#E04646">${s.bad}%</span><span class="score-badge ${cls}">${s.score}</span>`;
+    tbody.appendChild(row);
+  });
+}
+
+// ── RECORDS ───────────────────────────────────────────
+async function loadRecords(){
+  try{
+    const res=await fetch('http://localhost:5000/api/sessions');
+    const sessions=await res.json();
+    renderRecords(sessions);
+  }catch(e){renderFallbackRecords();}
+}
+function renderRecords(sessions){
+  const tbody=document.getElementById('recordsTable');tbody.innerHTML='';
+  document.getElementById('recTotal').textContent=sessions.length;
+  document.getElementById('recCount').textContent=sessions.length+' sessions';
+  if(!sessions.length){tbody.innerHTML='<div style="padding:24px 28px;color:var(--text-muted);font-size:14px">No sessions recorded yet. Start your first session!</div>';return;}
+  const gps=sessions.map(s=>parseFloat(s.good_posture_pct));
+  document.getElementById('recBestScore').textContent=Math.max(...gps).toFixed(1)+'%';
+  document.getElementById('recAvgGood').textContent=(gps.reduce((a,b)=>a+b,0)/gps.length).toFixed(1)+'%';
+  [...sessions].reverse().forEach(s=>{
+    const gp=parseFloat(s.good_posture_pct);
+    const score=gp>=80?'Great':gp>=65?'Good':gp>=45?'OK':'Poor';
+    const cls='score-'+score.toLowerCase();
+    const row=document.createElement('div');row.className='rt-row';
+    row.innerHTML=`<span>${s.date}</span><span>${s.duration_mmss}</span><span style="color:#16A97A">${s.good_posture_pct}%</span><span style="color:#E04646">${s.bad_posture_pct}%</span><span>—</span><span class="score-badge ${cls}">${score}</span>`;
+    tbody.appendChild(row);
+  });
+}
+function renderFallbackRecords(){
+  document.getElementById('recBestScore').textContent='82%';
+  document.getElementById('recTotal').textContent='5';
+  document.getElementById('recAvgGood').textContent='66.4%';
+  document.getElementById('recCount').textContent='5 sessions';
+  const tbody=document.getElementById('recordsTable');tbody.innerHTML='';
+  [{date:'Today 14:32',dur:'25:00',good:82,bad:18,score:'Great'},{date:'Today 11:05',dur:'25:00',good:74,bad:26,score:'Good'},{date:'Yesterday 16:20',dur:'18:34',good:61,bad:39,score:'OK'},{date:'Yesterday 10:45',dur:'25:00',good:55,bad:45,score:'Poor'},{date:'Mon 09:30',dur:'25:00',good:42,bad:58,score:'Poor'}].forEach(s=>{
+    const cls='score-'+s.score.toLowerCase();
+    const row=document.createElement('div');row.className='rt-row';
+    row.innerHTML=`<span>${s.date}</span><span>${s.dur}</span><span style="color:#16A97A">${s.good}%</span><span style="color:#E04646">${s.bad}%</span><span>—</span><span class="score-badge ${cls}">${s.score}</span>`;
+    tbody.appendChild(row);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────
+updateNavAuth();
+</script>
+</body>
+</html>
